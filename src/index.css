@@ -14,8 +14,13 @@ code {
 
 .viewport{
   border: 1px solid red;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .content{
   border : 1px solid blue;
+  box-sizing: border-box;
+  position:absolute;
+  transition: all 300ms ease-in-out;
 }
