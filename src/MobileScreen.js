@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useReducer, useRef} from "react";
+import React, {useEffect, useReducer, useRef} from "react";
 import classes from './MobileScreen.module.css';
 const DEFAULT_STATE = {
     screen : {
