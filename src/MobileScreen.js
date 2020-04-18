@@ -14,7 +14,6 @@ const reducer = (state,action) => {
         default :
             return state;
     }
-
 };
 
 
@@ -99,6 +98,9 @@ export default function MobileScren({videos,controllerRef}){
         }
         onResize();
         window.addEventListener("resize", onResize);
+        window.updateMobileScreenViewPorts = () => {
+            updateAllViewports();
+        };
         return () => {
             window.removeEventListener('resize',onResize);
         }
@@ -117,16 +119,11 @@ export default function MobileScren({videos,controllerRef}){
     useEffect(() => {
         updateAllViewports();
     },[ratio]);
-    useEffect(() =>{
-        setTimeout(updateAllViewports,100);
-    },[]);
     const numberOfBoxes = videos.length;
     useEffect(() => {
         updateAllViewports();
-        updateAllViewports();
     },[numberOfBoxes]);
     const boxPerRow = calculateBoxPerRow(numberOfBoxes);
-
     return <div ref={screenRef} style={screenStyle}>
         {videos.map((video,i) => <VideoElement key={i} video={video} isLandscapeMode={isLandscapeMode} boxPerRow={boxPerRow}/>)}
     </div>

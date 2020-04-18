@@ -6,13 +6,14 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 function createDiv() {
     const div = document.createElement('div');
     div.innerHTML = `<div style="width: 100%;height:100%;display: flex;align-items: center;justify-content: center">
-                <!--<img src="pics.jpg" />-->
+                <img src="pics.jpg" onload="updateMobileScreenViewPorts()"/>
             </div>`;
     return div;
 }
 
 export default function App() {
     const [videos,setVideos] = useState([]);
+    const screenRef = useRef();
     useEffect(() => {
         const vids = [];
         for (let i = 0; i < 5; i++) {
@@ -25,7 +26,7 @@ export default function App() {
         setVideos((vids) => [...vids,createDiv()]);
     }
 
-    const screenRef = useRef();
+
     function handleOnUpdate(){
         screenRef.current.updateDisplay();
     }
