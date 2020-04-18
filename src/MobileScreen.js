@@ -86,9 +86,12 @@ function updateAllViewports() {
     });
 }
 
-export default function MobileScreen({videos}){
+export default function MobileScren({videos,controllerRef}){
     const [state,dispatch] = useReducer(reducer,DEFAULT_STATE);
     const screenRef = useRef();
+    controllerRef.current = {
+        updateDisplay : updateAllViewports
+    };
     useEffect(() => {
         function onResize(event) {
             const {offsetWidth:width,offsetHeight:height} = screenRef.current;
@@ -116,11 +119,9 @@ export default function MobileScreen({videos}){
     },[ratio]);
     useEffect(() =>{
         setTimeout(updateAllViewports,100);
-
     },[]);
     const numberOfBoxes = videos.length;
     useEffect(() => {
-        // somehow we need to query twice ??
         updateAllViewports();
         updateAllViewports();
     },[numberOfBoxes]);
