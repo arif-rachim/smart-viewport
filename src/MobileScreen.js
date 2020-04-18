@@ -76,7 +76,6 @@ function VideoElement({isLandscapeMode,boxPerRow,video}) {
     style[isLandscapeMode ? 'width' : 'height'] = `${(100 / boxPerRow).toFixed(0)}%`;
     useEffect(() => {
         viewPortRef.current.appendChild(video);
-
     },[video]);
     return <div ref={viewPortRef} className={classes.viewport} style={style}/>;
 }
@@ -115,6 +114,10 @@ export default function MobileScreen({videos}){
     useEffect(() => {
         updateAllViewports();
     },[ratio]);
+    useEffect(() =>{
+        setTimeout(updateAllViewports,100);
+
+    },[]);
     const numberOfBoxes = videos.length;
     useEffect(() => {
         // somehow we need to query twice ??

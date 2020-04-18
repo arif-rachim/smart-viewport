@@ -9,10 +9,3 @@
     overflow: hidden;
 }
 
-.content{
-    border : 1px solid blue;
-    background-color: aqua;
-    box-sizing: border-box;
-    position:absolute;
-    transition: all 300ms ease-in-out;
-}
