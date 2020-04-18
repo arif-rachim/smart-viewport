@@ -6,8 +6,6 @@ export default function useContentFiller(){
     function fillContentInViewPort(content, viewPort) {
         const {offsetWidth: viewPortWidth, offsetHeight: viewPortHeight} = viewPort;
         const {offsetWidth: contentWidth, offsetHeight: contentHeight} = content;
-        const viewPortPortrait = viewPortHeight > viewPortWidth;
-        const contentPortrait = contentHeight > contentWidth;
         const scaleX = viewPortWidth / contentWidth;
         const scaleY = viewPortHeight / contentHeight;
         const scale = Math.max(scaleX,scaleY);
