@@ -1,68 +1,58 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Smart Viewport
 
-## Available Scripts
+Smart Viewport is a small React experiment from April 2020 that works out how to tile a changing number of media boxes so that together they fill the screen, the way a video-call app lays out participant tiles. The screen is a flex container that wraps into rows in landscape and into columns in portrait, and a lookup table picks how many boxes go on each row (for example 2 for four boxes, 3 for nine, 5 for ten, and 5 for anything above 18). Inside each box the content is scaled with a "cover" rule, so it fills the box completely, stays centred and keeps its aspect ratio, with a 300 ms CSS transition whenever the layout changes. The demo fills the boxes with a sample image and has buttons to add, remove and re-fit them. It was bootstrapped with Create React App and uses Material-UI buttons and sliders. It is a prototype for trying out the layout algorithm, not a packaged library, and it is not maintained.
 
-In the project directory, you can run:
+> Status: prototype from 2020, not actively maintained.
 
-### `npm start`
+**Live demo:** https://www.rach.im/smart-viewport/
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- Responsive grid for 1 to N boxes: rows in landscape, columns in portrait, recalculated on window resize.
+- Boxes-per-row lookup for 1 to 18 boxes, with a default of 5 beyond that.
+- "Cover" scaling of each box's content (`scale = max(boxWidth / contentWidth, boxHeight / contentHeight)`), centred with absolute positioning.
+- Animated transitions (`transition: all 300ms ease-in-out`) when boxes are added, removed or resized.
+- Demo controls: **Add**, **Remove** and **Update** (re-fit all boxes).
+- Workarounds for iOS pinch-zoom and double-tap zoom.
+- A `useContentFiller` hook and a `ContentFillerTestScreen` with sliders for testing the fill algorithm on its own (not mounted by the app).
 
-### `npm test`
+## Tech stack
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+React 16 · Create React App (react-scripts 3.4) · Material-UI 4 · CSS Modules · GitHub Pages
 
-### `npm run build`
+## Getting started
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Prerequisites: Node.js and npm.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```bash
+npm install
+npm start      # dev server on http://localhost:3000
+npm test       # CRA test runner (the repo has no test files)
+npm run build  # production build, then renames build/ to docs/
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The `build` script runs `react-scripts build && rename build docs`. `rename` is the Windows command; on macOS or Linux, run `npx react-scripts build && rm -rf docs && mv build docs` instead. The committed `docs/` folder is the build served by GitHub Pages.
 
-### `npm run eject`
+## Project structure
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```text
+src/
+  App.js                        Demo page: creates image boxes and the Add / Remove / Update buttons
+  MobileScreen.js               Grid layout, boxes-per-row table and content fill logic
+  MobileScreen.module.css       Box (viewport) styles
+  hooks/useContentFiller.js     Reusable hook version of the fill algorithm
+  hooks/ContentFillerTestScreen.js  Slider-based test screen for the hook
+public/                         CRA public assets, including the sample image pics.jpg
+docs/                           Built site published to GitHub Pages
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## How it works
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+1. `MobileScreen` measures its container and treats the screen as landscape when width is greater than height.
+2. `calculateBoxPerRow(n)` picks the number of boxes per row (or per column in portrait), and each box gets `100 / boxPerRow` percent of the width (landscape) or height (portrait), with `flex-grow: 1` spreading any leftover space.
+3. Each box is a DOM element appended into its tile. `updateAllViewports()` re-scales every tile's first child to cover the tile. It runs when the aspect ratio or box count changes, when a sample image finishes loading (through `window.updateMobileScreenViewPorts`), and when **Update** is pressed.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Limitations
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- Content is plain DOM nodes built with `innerHTML`, not React components, and only a sample image is used; no real video streams are wired in.
+- `package.json` still has `"homepage": "https://marsa-emreef.github.io/smart-viewport"`, an old address that is no longer online. It only sets the `/smart-viewport` base path for the build.
